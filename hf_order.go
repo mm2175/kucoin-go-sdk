@@ -1,6 +1,7 @@
 package kucoin
 
 import (
+	"context"
 	"encoding/json"
 	"math/big"
 	"net/http"
@@ -9,8 +10,8 @@ import (
 // HfPlaceOrder There are two types of orders:
 // (limit) order: set price and quantity for the transaction.
 // (market) order : set amount or quantity for the transaction.
-func (as *ApiService) HfPlaceOrder(params map[string]string) (*ApiResponse, error) {
-	req := NewRequest(http.MethodPost, "/api/v1/hf/orders", params)
+func (as *ApiService) HfPlaceOrder(ctx context.Context, params map[string]string) (*ApiResponse, error) {
+	req := NewRequestWithContext(ctx, http.MethodPost, "/api/v1/hf/orders", params)
 	return as.Call(req)
 }
 
@@ -98,21 +99,21 @@ type HfModifyOrderRes struct {
 }
 
 // HfCancelOrder This endpoint can be used to cancel a high-frequency order by orderId.
-func (as *ApiService) HfCancelOrder(orderId, symbol string) (*ApiResponse, error) {
+func (as *ApiService) HfCancelOrder(ctx context.Context, orderId, symbol string) (*ApiResponse, error) {
 	p := map[string]string{
 		"symbol": symbol,
 	}
-	req := NewRequest(http.MethodDelete, "/api/v1/hf/orders/"+orderId, p)
+	req := NewRequestWithContext(ctx, http.MethodDelete, "/api/v1/hf/orders/"+orderId, p)
 	return as.Call(req)
 }
 
 // HfSyncCancelOrder The difference between this interface and "Cancel orders by orderId" is that
 // this interface will synchronously return the order information after the order canceling is completed.
-func (as *ApiService) HfSyncCancelOrder(orderId, symbol string) (*ApiResponse, error) {
+func (as *ApiService) HfSyncCancelOrder(ctx context.Context, orderId, symbol string) (*ApiResponse, error) {
 	p := map[string]string{
 		"symbol": symbol,
 	}
-	req := NewRequest(http.MethodDelete, "/api/v1/hf/orders/sync/"+orderId, p)
+	req := NewRequestWithContext(ctx, http.MethodDelete, "/api/v1/hf/orders/sync/"+orderId, p)
 	return as.Call(req)
 }
 
@@ -127,21 +128,21 @@ type HfSyncCancelOrderRes struct {
 }
 
 // HfCancelOrderByClientId This endpoint sends out a request to cancel a high-frequency order using clientOid.
-func (as *ApiService) HfCancelOrderByClientId(clientOid, symbol string) (*ApiResponse, error) {
+func (as *ApiService) HfCancelOrderByClientId(ctx context.Context, clientOid, symbol string) (*ApiResponse, error) {
 	p := map[string]string{
 		"symbol": symbol,
 	}
-	req := NewRequest(http.MethodDelete, "/api/v1/hf/orders/client-order/"+clientOid, p)
+	req := NewRequestWithContext(ctx, http.MethodDelete, "/api/v1/hf/orders/client-order/"+clientOid, p)
 	return as.Call(req)
 }
 
 // HfSyncCancelOrderByClientId The difference between this interface and "Cancellation of order by clientOid"
 // is that this interface will synchronously return the order information after the order canceling is completed.
-func (as *ApiService) HfSyncCancelOrderByClientId(clientOid, symbol string) (*ApiResponse, error) {
+func (as *ApiService) HfSyncCancelOrderByClientId(ctx context.Context, clientOid, symbol string) (*ApiResponse, error) {
 	p := map[string]string{
 		"symbol": symbol,
 	}
-	req := NewRequest(http.MethodDelete, "/api/v1/hf/orders/sync/client-order/"+clientOid, p)
+	req := NewRequestWithContext(ctx, http.MethodDelete, "/api/v1/hf/orders/sync/client-order/"+clientOid, p)
 	return as.Call(req)
 }
 
@@ -173,11 +174,11 @@ func (as *ApiService) HfSyncCancelAllOrders(symbol string) (*ApiResponse, error)
 
 // HfObtainActiveOrders This endpoint obtains a list of all active HF orders.
 // The return data is sorted in descending order based on the latest update times.
-func (as *ApiService) HfObtainActiveOrders(symbol string) (*ApiResponse, error) {
+func (as *ApiService) HfObtainActiveOrders(ctx context.Context, symbol string) (*ApiResponse, error) {
 	p := map[string]string{
 		"symbol": symbol,
 	}
-	req := NewRequest(http.MethodGet, "/api/v1/hf/orders/active", p)
+	req := NewRequestWithContext(ctx, http.MethodGet, "/api/v1/hf/orders/active", p)
 	return as.Call(req)
 }
 
@@ -242,21 +243,21 @@ type HfFilledOrdersModel struct {
 }
 
 // HfOrderDetail This endpoint can be used to obtain information for a single HF order using the order id.
-func (as *ApiService) HfOrderDetail(orderId, symbol string) (*ApiResponse, error) {
+func (as *ApiService) HfOrderDetail(ctx context.Context, orderId, symbol string) (*ApiResponse, error) {
 	p := map[string]string{
 		"symbol": symbol,
 	}
-	req := NewRequest(http.MethodGet, "/api/v1/hf/orders/"+orderId, p)
+	req := NewRequestWithContext(ctx, http.MethodGet, "/api/v1/hf/orders/"+orderId, p)
 	return as.Call(req)
 }
 
 // HfOrderDetailByClientOid The endpoint can be used to obtain information about a single order using clientOid.
 // If the order does not exist, then there will be a prompt saying that the order does not exist.
-func (as *ApiService) HfOrderDetailByClientOid(clientOid, symbol string) (*ApiResponse, error) {
+func (as *ApiService) HfOrderDetailByClientOid(ctx context.Context, clientOid, symbol string) (*ApiResponse, error) {
 	p := map[string]string{
 		"symbol": symbol,
 	}
-	req := NewRequest(http.MethodGet, "/api/v1/hf/orders/client-order/"+clientOid, p)
+	req := NewRequestWithContext(ctx, http.MethodGet, "/api/v1/hf/orders/client-order/"+clientOid, p)
 	return as.Call(req)
 }
 
